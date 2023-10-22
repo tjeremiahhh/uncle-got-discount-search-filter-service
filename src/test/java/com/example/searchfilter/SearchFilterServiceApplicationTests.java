@@ -1,4 +1,4 @@
-package com.example.searchfilterservice;
+package com.example.searchfilter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
