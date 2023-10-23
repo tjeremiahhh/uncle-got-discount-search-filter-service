@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.searchfilter.dto.SearchListingDTO;
+import com.example.searchfilter.dto.SearchListingsRequestDTO;
 import com.example.searchfilter.dto.SearchResultDTO;
 import com.example.searchfilter.entity.Cuisine;
+import com.example.searchfilter.entity.Discount;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,5 +39,20 @@ public class SearchFilterController {
     @GetMapping(value = "get-all-cuisines", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Cuisine> getAllCuisines() {
         return searchFilterService.getAllCuisines();
+    }
+
+    @GetMapping(value = "get-all-discounts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Discount> getAllDiscounts() {
+        return searchFilterService.getAllDiscounts();
+    }
+
+    @PostMapping(value = "search-listings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SearchListingDTO> searchListings(@RequestBody SearchListingsRequestDTO searchListingsRequestDTO) {
+        return searchFilterService.searchListings(
+            searchListingsRequestDTO.getOutletName(), 
+            searchListingsRequestDTO.getCuisineList(), 
+            searchListingsRequestDTO.getMinDiscount(), 
+            searchListingsRequestDTO.getMaxDiscount()
+            );
     }
 }
