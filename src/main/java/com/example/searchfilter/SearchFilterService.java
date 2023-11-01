@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.naming.directory.SearchResult;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,26 +53,33 @@ public class SearchFilterService {
         return searchFilterRepository.findAll(Discount.class);
     }
 
-    public List<SearchListingDTO> searchListings(String outletName, List<Integer> cuisineList, int minDiscount, int maxDiscount) {
-        List<SearchResultDTO> searchResultDTOList = searchFilterRepository.searchByOutletName(outletName);
+    public Page<SearchListingDTO> searchListings(String outletName, List<Integer> cuisineList, int minDiscount, int maxDiscount, Pageable pageable) {
+        // List<SearchResultDTO> searchResultDTOList = searchFilterRepository.searchByOutletName(outletName);
 
-        searchResultDTOList.removeIf((searchResult) -> {
-            List<String> searchResultCuisineList = new ArrayList<String>(Arrays.asList(searchResult.getCuisines().split("|")));
-            List<String> cuisineStringList = cuisineList.stream().map(cuisine -> cuisine.toString()).collect(Collectors.toList());
-            return !searchResultCuisineList.removeAll(cuisineStringList);
-        });
+        // searchResultDTOList.removeIf((searchResult) -> {
+        //     List<String> searchResultCuisineList = new ArrayList<String>(Arrays.asList(searchResult.getCuisines().split("|")));
+        //     List<String> cuisineStringList = cuisineList.stream().map(cuisine -> cuisine.toString()).collect(Collectors.toList());
+        //     return !searchResultCuisineList.removeAll(cuisineStringList);
+        // });
 
-        List<SearchListingDTO> searchListingDTOList = new ArrayList<>();
+        // List<SearchListingDTO> searchListingDTOList = new ArrayList<>();
 
-        searchResultDTOList.forEach((searchResult) -> {
-            List<BusinessListingDiscountDTO> businessListingDiscountDTOList = 
-                searchFilterRepository.searchBusinessListingDiscount(searchResult.getId(), minDiscount, maxDiscount);
+        // searchResultDTOList.forEach((searchResult) -> {
+        //     List<BusinessListingDiscountDTO> businessListingDiscountDTOList = 
+        //         searchFilterRepository.searchBusinessListingDiscount(searchResult.getId(), minDiscount, maxDiscount);
 
-            if (businessListingDiscountDTOList.size() > 0) {
-                SearchListingDTO searchListingDTO = new SearchListingDTO(searchResult);
-                searchListingDTO.setDiscountList(businessListingDiscountDTOList);
-                searchListingDTOList.add(searchListingDTO);
-            }
+        //     if (businessListingDiscountDTOList.size() > 0) {
+        //         SearchListingDTO searchListingDTO = new SearchListingDTO(searchResult);
+        //         searchListingDTO.setDiscountList(businessListingDiscountDTOList);
+        //         searchListingDTOList.add(searchListingDTO);
+        //     }
+        // });
+
+        // return searchListingDTOList;
+        Page<SearchListingDTO> searchListingDTOList = searchFilterRepository.searchBusinessListings(outletName, cuisineList, minDiscount, maxDiscount, pageable);
+
+        searchListingDTOList.forEach((searchListing) -> {
+            searchListing.setDiscountList(searchFilterRepository.searchBusinessListingDiscount(searchListing.getId(), minDiscount, maxDiscount));
         });
 
         return searchListingDTOList;

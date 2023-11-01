@@ -44,7 +44,7 @@ public class SqlUtil {
             return i == 0 ? " ORDER BY " + order : order;
         }).collect(Collectors.joining(", "));
 
-        String offsetQuery = MessageFormat.format(" OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY",
+        String offsetQuery = MessageFormat.format(" LIMIT {0}, {1} ",
                 String.valueOf(pageable.getOffset()), String.valueOf(pageable.getPageSize()));
         offsetQuery = StringUtils.isBlank(sortQuery) ? defaultSort + offsetQuery : offsetQuery;
         sortAndOffsetQuery.append(sortQuery).append(offsetQuery);

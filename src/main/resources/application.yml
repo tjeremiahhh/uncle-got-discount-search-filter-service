@@ -1,11 +1,13 @@
 app.name: Search and Filter Microservice
 
 #DATASOURCE
-spring.datasource:
-  url: jdbc:mysql://ugd-business-listing-rds.c9v9opuetitb.ap-southeast-1.rds.amazonaws.com:3306/businesslistingrds
-  username: admin
-  password: nusissteam29
-  # driver-class-name: com.mysql.jdbc.Driver
+spring:
+  datasource:
+    url: jdbc:mysql://ugd-business-listing-rds.c9v9opuetitb.ap-southeast-1.rds.amazonaws.com:3306/businesslistingrds
+    username: admin
+    password: nusissteam29
+    # driver-class-name: com.mysql.jdbc.Driver
+  data.web.pageable.one-indexed-parameters: true
 
 #LOGGING
 logging.level.org.springframework:
